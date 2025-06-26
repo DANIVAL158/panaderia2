@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panadería Delicias</title>
+  <style>
+    body {
+      font-family: Berlin Sans FB, sans-serif;
+      background: #fff8f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #d2691e;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    .productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .producto {
+      background: #fff;
+      border: 2px solid #e0b07c;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .producto img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .producto h3 {
+      margin: 10px 0 5px;
+    }
+
+    .producto p {
+      margin: 0 0 10px;
+    }
+
+    button {
+      background-color: #d2691e;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .carrito {
+      background-color: #f4e7d4;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+    }
+
+    .carrito h2 {
+      margin-top: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #d2691e;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Panadería Delicias</h1>
+  <p>¡Elige tus panes y pasteles favoritos!</p>
+</header>
+
+<section class="productos" id="lista-productos">
+  <!-- Productos se agregan desde JavaScript -->
+</section>
+
+<section class="carrito">
+  <h2> Carrito de compras</h2>
+  <ul id="lista-carrito"></ul>
+  <p>Total de piezas: <span id="total-piezas">0</span></p>
+  <p>Total a pagar: $<span id="total-pagar">0.00</span></p>
+  <button onclick="vaciarCarrito()">Vaciar carrito</button>
+
+<section class="contacto">
+  <h2>📞 Contáctanos</h2>
+  <p>¿Tienes dudas o quieres hacer un pedido especial? Escríbenos:</p>
+  <p><strong>Correo:</strong> contacto@panaderiadelicias.com</p>
+  <p><strong>Teléfono:</strong> +52 200 100 0000</p>
+  <p><strong>Dirección:</strong> Calle Panadería #123, Tlaxcala, México</p>
+</section>
+
+<section class="contacto">
+  <h2>💳 Aceptamos tarjetas</h2>
+  <p>En Panadería Delicias aceptamos pagos con tarjetas de <strong>débito</strong> y <strong>crédito</strong> para tu comodidad.</p>
+  <p>¡Compra fácil, rápido y seguro!</p>
+</section>
+
+<script>
+  const productos = [
+    { nombre: "Concha de Vainilla", precio: 10, imagen: "https://th.bing.com/th/id/OIP.Q9MqdaDZxJ1COaXxItIERAHaE8?r=0&rs=1&pid=ImgDetMain" },
+    { nombre: "Pan de Muerto", precio: 15, imagen: "https://th.bing.com/th/id/OIP.FcHa9g_kE2PvgWFyZbiXMAHaEK?r=0&rs=1&pid=ImgDetMain" },
+    { nombre: "Pastel de Chocolate", precio: 80, imagen: "https://th.bing.com/th/id/OIP.Wmc4mHTn678ylkEo2CNzzQAAAA?r=0&rs=1&pid=ImgDetMain" },
+    { nombre: "Cuernito", precio: 12, imagen: "https://cdn7.kiwilimon.com/recetaimagen/729/15204.jpg" },
+    { nombre: "Oreja", precio: 10, imagen: "https://th.bing.com/th/id/OIP.r9zfgb_7MySBcUQ3oH0yIAHaEO?r=0&rs=1&pid=ImgDetMain" },
+    { nombre: "Pastel de Fresas", precio: 90, imagen: "https://dulcerojo.com.mx/wp-content/uploads/2022/07/90-1536x1022.jpg" },
+    { nombre: "Donas", precio: 8, imagen: "https://th.bing.com/th/id/OIP.7qJYBpC1GmNhZZnxvgY0OAHaE8?r=0&rs=1&pid=ImgDetMain" },
+    { nombre: "Roles de Canela", precio: 14, imagen: "https://th.bing.com/th/id/OIP.nVs5htR1rtZ6qsAaVqkkhAHaEr?r=0&rs=1&pid=ImgDetMain" },
+    { nombre: "Baguette", precio: 20, imagen: "https://th.bing.com/th/id/R.b8d6c7c593fdd3fcdf7a272fba1a7bc1?rik=6zl1tYr6Em2UKQ&pid=ImgRaw&r=0" }
+  ];
+
+  const listaProductos = document.getElementById("lista-productos");
+  const listaCarrito = document.getElementById("lista-carrito");
+  const totalPiezas = document.getElementById("total-piezas");
+  const totalPagar = document.getElementById("total-pagar");
+
+  let carrito = [];
+
+  
+
+  function mostrarProductos() {
+    productos.forEach((producto, index) => {
+      const div = document.createElement("div");
+      div.classList.add("producto");
+      div.innerHTML = `
+        <img src="${producto.imagen}" alt="${producto.nombre}">
+        <h3>${producto.nombre}</h3>
+        <p>Precio: $${producto.precio}</p>
+        <button onclick="agregarAlCarrito(${index})">Agregar al carrito</button>
+      `;
+      listaProductos.appendChild(div);
+    });
+  }
+
+  function agregarAlCarrito(index) {
+    const producto = productos[index];
+    carrito.push(producto);
+    actualizarCarrito();
+  }
+
+  function actualizarCarrito() {
+    listaCarrito.innerHTML = "";
+    let total = 0;
+
+    carrito.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.nombre} - $${item.precio}`;
+      listaCarrito.appendChild(li);
+      total += item.precio;
+    });
+
+    totalPiezas.textContent = carrito.length;
+    totalPagar.textContent = total.toFixed(2);
+  }
+
+  function vaciarCarrito() {
+    carrito = [];
+    actualizarCarrito();
+  }
+
+  // Mostrar productos al cargar la página
+  mostrarProductos();
+</script>
+
+</body>
+</html>
